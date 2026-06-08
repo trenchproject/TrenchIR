@@ -2,6 +2,49 @@
   "_comment": "Metadata snapshot driving the gallery and map. Replace the sample entries below with your own. Each record's `iron`, `embedded`, `rainbow`, `greyscale`, `flir`, `raw`, `param` fields are FILENAMES inside the image repo configured in config.js. Leave a field blank or omit it if that asset does not exist. lat/lon are decimal degrees (omit to keep a point off the map).",
   "images": [
     {
+      "name": "image_1.jpg",
+      "flir": "image_1.jpg"
+    },
+    {
+      "name": "image_2.jpg",
+      "flir": "image_2.jpg",
+      "lat": 47.6062, "lon": -122.3321
+    },
+    {
+      "name": "image_3.jpg",
+      "flir": "image_3.jpg"
+    },
+    {
+      "name": "image_4.jpg",
+      "flir": "image_4.jpg"
+    },
+    {
+      "name": "image_5.jpg",
+      "flir": "image_5.jpg"
+    },
+    {
+      "name": "image_6.jpg",
+      "flir": "image_6.jpg"
+    },
+     {
+      "name": "carousel_1.jpg",
+      "flir": "carousel_1.jpg"
+    },
+     {
+      "name": "carousel_2.jpg",
+      "flir": "carousel_2.jpg"
+    },
+     {
+      "name": "carousel_3.jpg",
+      "flir": "carousel_3.jpg"
+    },
+        {
+      "name": "gallery_1.jpg",
+     "greyscale": "gallery_1.jpg",
+      "flir": "gallery_2.jpg",
+      "lat": 40.05, "lon": -105.27
+    },
+    {
       "name": "sample-grasshopper.jpg",
       "iron": "IRON-sample-grasshopper.jpg",
       "rainbow": "RAIN-sample-grasshopper.jpg",
