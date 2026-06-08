@@ -1,0 +1,61 @@
+{
+  "_comment": "Metadata snapshot driving the gallery and map. Replace the sample entries below with your own. Each record's `iron`, `embedded`, `rainbow`, `greyscale`, `flir`, `raw`, `param` fields are FILENAMES inside the image repo configured in config.js. Leave a field blank or omit it if that asset does not exist. lat/lon are decimal degrees (omit to keep a point off the map).",
+  "images": [
+    {
+      "name": "sample-grasshopper.jpg",
+      "iron": "IRON-sample-grasshopper.jpg",
+      "rainbow": "RAIN-sample-grasshopper.jpg",
+      "greyscale": "GREY-sample-grasshopper.jpg",
+      "embedded": "EMBED-sample-grasshopper.jpg",
+      "flir": "sample-grasshopper.jpg",
+      "raw": "RAW-sample-grasshopper.tiff",
+      "param": "PARAM-sample-grasshopper.json",
+      "scientificName": "Melanoplus sanguinipes",
+      "commonName": "Migratory grasshopper",
+      "fauna1": "Arthropod", "fauna2": "NA",
+      "flora1": "Grass", "flora2": "NA",
+      "biome": "terrestrial", "specificBiome": "grassland",
+      "substrate": "rock",
+      "description": "Grasshopper thermoregulating on a sun-warmed rock surface.",
+      "contributor": "Buckley Lab", "contributorLink": "faculty.washington.edu/lbuckley/",
+      "location": "Front Range, Colorado, USA",
+      "lat": 40.05, "lon": -105.27
+    },
+    {
+      "name": "sample-koala.jpg",
+      "iron": "IRON-sample-koala.jpg",
+      "rainbow": "RAIN-sample-koala.jpg",
+      "greyscale": "GREY-sample-koala.jpg",
+      "embedded": "EMBED-sample-koala.jpg",
+      "flir": "sample-koala.jpg",
+      "scientificName": "Phascolarctos cinereus",
+      "commonName": "Koala",
+      "fauna1": "Marsupial", "fauna2": "NA",
+      "flora1": "Tree", "flora2": "NA",
+      "biome": "terrestrial", "specificBiome": "forest",
+      "substrate": "leaves",
+      "description": "Koala pressed against a cool tree trunk to offload body heat.",
+      "contributor": "TrEnCh Project", "contributorLink": "trenchproject.com",
+      "location": "Queensland, Australia",
+      "lat": -27.47, "lon": 153.02
+    },
+    {
+      "name": "sample-penguin.jpg",
+      "iron": "IRON-sample-penguin.jpg",
+      "rainbow": "RAIN-sample-penguin.jpg",
+      "greyscale": "GREY-sample-penguin.jpg",
+      "embedded": "EMBED-sample-penguin.jpg",
+      "flir": "sample-penguin.jpg",
+      "scientificName": "Aptenodytes patagonicus",
+      "commonName": "King penguin",
+      "fauna1": "Bird", "fauna2": "NA",
+      "flora1": "NA", "flora2": "NA",
+      "biome": "terrestrial", "specificBiome": "tundra",
+      "substrate": "ice",
+      "description": "King penguin showing cold periphery and warm core via countercurrent heat exchange.",
+      "contributor": "TrEnCh Project", "contributorLink": "trenchproject.com",
+      "location": "South Georgia Island",
+      "lat": -54.28, "lon": -36.51
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TrEnCh-IR | Map</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,700,800" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/css/animate.css">
+    <link rel="stylesheet" href="stylesheets/css/aos.css">
+    <link rel="stylesheet" href="stylesheets/css/ionicons.min.css">
+    <link rel="stylesheet" href="stylesheets/css/flaticon.css">
+    <link rel="stylesheet" href="stylesheets/css/icomoon.css">
+    <link rel="stylesheet" href="stylesheets/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="icon" href="favicon.ico">
+    <style>
+      #map { height: 70vh; width: 100%; border-radius: 6px; }
+      .map-popup img { max-width: 220px; height: auto; display:block; margin-bottom: 6px; }
+      .map-popup a { font-weight: 700; }
+    </style>
+  </head>
+  <body>
+  <!-- START nav -->
+  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><img src="images/logo.png" height="75px" alt="TrEnCh-IR"></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="oi oi-menu"></span> Menu
+      </button>
+      <div class="collapse navbar-collapse" id="ftco-nav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+          <li class="nav-item"><a href="science.html" class="nav-link">The Science</a></li>
+          <li class="nav-item dropdown active">
+            <a class="nav-link dropdown-toggle" href="gallery.html" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Explore</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown04">
+              <a class="dropdown-item" href="map.html">Map</a>
+              <a class="dropdown-item" href="gallery.html">Gallery</a>
+            </div>
+          </li>
+          <li class="nav-item"><a href="conversion.html" class="nav-link">Conversion Tools</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="case-studies.html" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Educational Resources</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown05">
+              <a class="dropdown-item" href="king-penguins.html">Case Study: Penguins</a>
+              <a class="dropdown-item" href="koalas.html">Case Study: Koalas</a>
+              <a class="dropdown-item" href="pollination.html">Case Study: Pollination</a>
+            </div>
+          </li>
+          <li class="nav-item cta"><a href="mailto:lbuckley@uw.edu" class="nav-link"><span>Get in touch</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- END nav -->
+
+  <div class="ftco-section bg-light">
+    <div class="container">
+      <div class="row justify-content-center mb-4">
+        <div class="col-md-8 text-center heading-section ftco-animate">
+          <h2 class="mb-3"><b>Image Map</b></h2>
+          <p>Each marker is a thermal image with recorded coordinates. Click a marker to preview and open it.</p>
+        </div>
+      </div>
+      <div class="row"><div class="col-md-12"><div id="map"></div></div></div>
+    </div>
+  </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="data/config.js"></script>
+    <script>
+      function pageLink(img) {
+        const p = new URLSearchParams();
+        Object.entries(img).forEach(([k, v]) => { if (v !== undefined && v !== null) p.set(k, v); });
+        return "page.html?" + p.toString();
+      }
+
+      const map = L.map("map").setView([20, -20], 2);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      fetch("data/images.json")
+        .then(r => r.json())
+        .then(d => {
+          const pts = (d.images || []).filter(i => typeof i.lat === "number" && typeof i.lon === "number");
+          const bounds = [];
+          pts.forEach(img => {
+            const thumb = img.iron ? imageUrl(img.iron) : (img.embedded ? imageUrl(img.embedded) : "");
+            const link = pageLink(img);
+            const html =
+              `<div class="map-popup">` +
+                (thumb ? `<a href="${link}"><img src="${thumb}" alt="${img.scientificName || img.name}"></a>` : "") +
+                `<a href="${link}"><i>${img.scientificName || img.name}</i></a><br>` +
+                `${img.commonName || ""}<br><small>${img.location || ""}</small>` +
+              `</div>`;
+            L.marker([img.lat, img.lon]).addTo(map).bindPopup(html);
+            bounds.push([img.lat, img.lon]);
+          });
+          if (bounds.length) map.fitBounds(bounds, { padding: [50, 50], maxZoom: 5 });
+        })
+        .catch(() => {});
+    </script>
+  </body>
+</html>

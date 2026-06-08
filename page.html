@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TrEnCh-IR | Image</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,700,800" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/css/animate.css">
+    <link rel="stylesheet" href="stylesheets/css/magnific-popup.css">
+    <link rel="stylesheet" href="stylesheets/css/aos.css">
+    <link rel="stylesheet" href="stylesheets/css/ionicons.min.css">
+    <link rel="stylesheet" href="stylesheets/css/flaticon.css">
+    <link rel="stylesheet" href="stylesheets/css/icomoon.css">
+    <link rel="stylesheet" href="stylesheets/css/style.css">
+    <link rel="icon" href="favicon.ico">
+    <style>
+      .twentytwenty-wrapper { max-width: 600px; margin: 0 auto; }
+      #og, #embedded, #og_backup { max-height: 55vh; width: auto; max-width: 90%; }
+    </style>
+  </head>
+  <body>
+  <!-- START nav -->
+  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><img src="images/logo.png" height="75px" alt="TrEnCh-IR"></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="oi oi-menu"></span> Menu
+      </button>
+      <div class="collapse navbar-collapse" id="ftco-nav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+          <li class="nav-item"><a href="science.html" class="nav-link">The Science</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="gallery.html" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Explore</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown04">
+              <a class="dropdown-item" href="map.html">Map</a>
+              <a class="dropdown-item" href="gallery.html">Gallery</a>
+            </div>
+          </li>
+          <li class="nav-item"><a href="conversion.html" class="nav-link">Conversion Tools</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="case-studies.html" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Educational Resources</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown05">
+              <a class="dropdown-item" href="king-penguins.html">Case Study: Penguins</a>
+              <a class="dropdown-item" href="koalas.html">Case Study: Koalas</a>
+              <a class="dropdown-item" href="pollination.html">Case Study: Pollination</a>
+            </div>
+          </li>
+          <li class="nav-item cta"><a href="mailto:lbuckley@uw.edu" class="nav-link"><span>Get in touch</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- END nav -->
+
+  <section class="ftco-section-parallax">
+    <div class="parallax-img d-flex align-items-center">
+      <div class="container">
+        <div class="row d-flex justify-content-center">
+          <div class="col-md-12 text-center heading-section heading-section-white ftco-animate" style="color: white;">
+            <div class="row">
+              <div class="col" style="text-align: right; color: white;">
+                <h3 style="color: white;">Image Specifics</h3>
+                <p id="species"></p>
+                <p id="common"></p>
+                <p id="fauna"></p>
+                <p id="flora"></p>
+                <p id="biome"></p>
+                <p id="substrate"></p>
+                <p id="contributor"></p>
+                <br>
+                <p id="desc"></p>
+                <p id="location"></p>
+              </div>
+              <div class="col" style="text-align: left;">
+                <div class="tt" style="margin-top:10px;">
+                  <div id="container1">
+                    <img id="embedded" src="" alt="digital image">
+                    <img id="og" src="" alt="thermal image">
+                  </div>
+                </div>
+                <img id="og_backup" style="display:none; margin-top:10px;" src="" alt="thermal image">
+                <form name="palettes" style="color: white; margin-top: 12px;">
+                  <input type="radio" id="ironbow" name="palettes" value="ironbow" checked/>
+                  <label for="ironbow">Ironbow</label>&nbsp;&nbsp;&nbsp;
+                  <input type="radio" id="rainbow" name="palettes" value="rainbow"/>
+                  <label for="rainbow">Rainbow</label>&nbsp;&nbsp;&nbsp;
+                  <input type="radio" id="greyscale" name="palettes" value="greyscale"/>
+                  <label for="greyscale">Greyscale</label>
+                </form>
+              </div>
+            </div>
+            <hr>
+            <p style="color: white;" id="downloads">Download:</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js"></script>
+    <script src="js/jquery.event.move.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zurb/twentytwenty@master/js/jquery.twentytwenty.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="data/config.js"></script>
+    <script>
+      function q(name) { return new URLSearchParams(window.location.search).get(name) || ""; }
+      function url(fn) { return fn ? imageUrl(fn) : ""; }
+
+      const data = {
+        name: q("name"),
+        iron: q("iron"), rainbow: q("rainbow"), greyscale: q("greyscale"),
+        embedded: q("embedded"), flir: q("flir"), raw: q("raw"), param: q("param"),
+        scientificName: q("scientificName"), commonName: q("commonName"),
+        fauna1: q("fauna1"), fauna2: q("fauna2"), flora1: q("flora1"), flora2: q("flora2"),
+        biome: q("biome"), specificBiome: q("specificBiome"), substrate: q("substrate"),
+        contributor: q("contributor"), contributorLink: q("contributorLink"), location: q("location")
+      };
+
+      function setText(id, label, value) {
+        const el = document.getElementById(id);
+        if (value && value !== "NA") { el.textContent = label + value; }
+        else { el.style.display = "none"; }
+      }
+
+      $(function () {
+        setText("species", "Species: ", data.scientificName);
+        setText("common", "Common Name: ", data.commonName);
+        const fauna = [data.fauna1, data.fauna2].filter(x => x && x !== "NA").join(", ");
+        setText("fauna", "Fauna: ", fauna);
+        const flora = [data.flora1, data.flora2].filter(x => x && x !== "NA").join(", ");
+        setText("flora", "Flora: ", flora);
+        const biome = [data.biome, (data.specificBiome && data.specificBiome !== "NA") ? data.specificBiome : ""].filter(Boolean).join(" - ");
+        setText("biome", "Biome: ", biome);
+        setText("substrate", "Substrate: ", data.substrate);
+        setText("desc", "", data.desc || q("description"));
+        setText("location", "Location: ", data.location);
+
+        // contributor (with optional link)
+        const cEl = document.getElementById("contributor");
+        if (data.contributor) {
+          if (data.contributorLink) {
+            cEl.innerHTML = 'Contributor: <u><a style="color:white;" target="_blank" href="http://' +
+              data.contributorLink.replace(/^https?:\/\//, "") + '">' + data.contributor + "</a></u>";
+          } else { cEl.textContent = "Contributor: " + data.contributor; }
+        } else { cEl.style.display = "none"; }
+
+        // images
+        const ironURL = url(data.iron), embedURL = url(data.embedded);
+        $("#og").attr("src", ironURL);
+        $("#og_backup").attr("src", ironURL);
+        if (embedURL) {
+          $("#embedded").attr("src", embedURL);
+          $("#container1").twentytwenty();
+        } else {
+          $("#container1").hide();
+          $("#og_backup").show();
+        }
+
+        // palette toggle
+        $("#ironbow").click(() => { $("#og,#og_backup").attr("src", url(data.iron)); });
+        $("#rainbow").click(() => { if (data.rainbow) $("#og,#og_backup").attr("src", url(data.rainbow)); });
+        $("#greyscale").click(() => { if (data.greyscale) $("#og,#og_backup").attr("src", url(data.greyscale)); });
+
+        // download buttons (only those that exist)
+        const dl = document.getElementById("downloads");
+        const btn = (href, title, text) => href ?
+          ` <a href="${href}" target="_blank" title="${title}" class="btn btn-primary btn-outline-white">${text}</a>` : "";
+        dl.innerHTML = "Download:" +
+          btn(url(data.iron), "Ironbow temperature-coded image", "Ironbow Image") +
+          btn(url(data.rainbow), "Rainbow temperature-coded image", "Rainbow Image") +
+          btn(url(data.greyscale), "Greyscale temperature-coded image", "Greyscale Image") + "<br>" +
+          btn(url(data.flir), "Original FLIR jpg", "FLIR jpg") +
+          btn(url(data.raw), "Raw radiometric data", "RAW data") +
+          btn(url(data.param), "Thermal parameters (JSON)", "Parameters") +
+          btn(url(data.embedded), "Digital (non-thermal) image", "Non-thermal image");
+      });
+    </script>
+  </body>
+</html>

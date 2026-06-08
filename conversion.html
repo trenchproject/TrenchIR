@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TrEnCh-IR | Thermal Conversion Tools</title>
+    <meta name="description" content="How FLIR thermal images are converted to temperature data, and the open-source tools that do it.">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,700,800" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/css/animate.css">
+    <link rel="stylesheet" href="stylesheets/css/aos.css">
+    <link rel="stylesheet" href="stylesheets/css/ionicons.min.css">
+    <link rel="stylesheet" href="stylesheets/css/flaticon.css">
+    <link rel="stylesheet" href="stylesheets/css/icomoon.css">
+    <link rel="stylesheet" href="stylesheets/css/style.css">
+    <link rel="icon" href="favicon.ico">
+    <style>
+      .step-num { display:inline-flex; align-items:center; justify-content:center;
+        width:44px; height:44px; border-radius:50%; background:#f96d00; color:#fff;
+        font-weight:700; font-size:20px; margin-bottom:12px; }
+      .tool-card { background:#fff; border:1px solid #eee; border-radius:8px; padding:24px;
+        height:100%; box-shadow:0 6px 18px rgba(0,0,0,.05); transition:transform .2s; }
+      .tool-card:hover { transform:translateY(-4px); }
+      .tool-card h3 { font-size:20px; margin-bottom:6px; }
+      .tool-lang { display:inline-block; font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+        color:#f96d00; font-weight:700; margin-bottom:10px; }
+      .palette-swatch { height:26px; border-radius:4px; }
+      .iron { background:linear-gradient(90deg,#000,#3b0a59,#a52a78,#ed6925,#fdc328,#fff); }
+      .rain { background:linear-gradient(90deg,#000080,#0000ff,#00ffff,#00ff00,#ffff00,#ff0000); }
+      .grey { background:linear-gradient(90deg,#000,#fff); }
+    </style>
+  </head>
+  <body>
+  <!-- START nav -->
+  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><img src="images/logo.png" height="75px" alt="TrEnCh-IR"></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="oi oi-menu"></span> Menu
+      </button>
+      <div class="collapse navbar-collapse" id="ftco-nav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+          <li class="nav-item"><a href="science.html" class="nav-link">The Science</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="gallery.html" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Explore</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown04">
+              <a class="dropdown-item" href="map.html">Map</a>
+              <a class="dropdown-item" href="gallery.html">Gallery</a>
+            </div>
+          </li>
+          <li class="nav-item active"><a href="conversion.html" class="nav-link">Conversion Tools</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="case-studies.html" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Educational Resources</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown05">
+              <a class="dropdown-item" href="king-penguins.html">Case Study: Penguins</a>
+              <a class="dropdown-item" href="koalas.html">Case Study: Koalas</a>
+              <a class="dropdown-item" href="pollination.html">Case Study: Pollination</a>
+            </div>
+          </li>
+          <li class="nav-item cta"><a href="mailto:lbuckley@uw.edu" class="nav-link"><span>Get in touch</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- END nav -->
+
+  <!-- START headline -->
+  <div style="position:relative; background-image:url('images/science_1.jpg'); background-size:cover; background-position:center; min-height:45vh; display:flex; align-items:center;">
+    <div style="position:absolute; inset:0; background:rgba(20,40,70,0.55);"></div>
+    <div class="container" style="position:relative; z-index:2;">
+      <div class="row justify-content-center">
+        <div class="col-md-10 text-center" style="padding:60px 0;">
+          <h1 class="mb-3" style="color:#fff;"><b>Thermal Conversion</b></h1>
+          <p style="color:#fff;">How a FLIR radiometric JPG becomes temperature data &mdash; and the open-source tools that do it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END headline -->
+
+  <!-- START intro -->
+  <section class="ftco-section">
+    <div class="container">
+      <div class="row justify-content-center mb-5">
+        <div class="col-md-10 text-center heading-section ftco-animate">
+          <h2 class="h1 mb-4">From radiometric JPG to temperature</h2>
+          <p>A FLIR camera saves an ordinary-looking JPG, but embedded inside it is a block of
+          <b>raw radiometric data</b> plus the calibration constants needed to turn that data into temperatures.
+          The original TrEnCh-IR website ran this conversion automatically on an Azure Function app. This static
+          site instead documents the pipeline and points you to the open-source tools &mdash; primarily those by
+          <a href="https://github.com/gtatters" target="_blank">Glenn Tattersall</a> &mdash; that you can run yourself
+          to reproduce every output the live site generated.</p>
+        </div>
+      </div>
+
+      <!-- pipeline steps -->
+      <div class="row text-center">
+        <div class="col-md-3 ftco-animate mb-4">
+          <div class="step-num">1</div>
+          <h4>Extract metadata</h4>
+          <p>Read the FLIR calibration parameters (Planck constants, emissivity, reflected temperature,
+          atmospheric terms) and any GPS tags from the JPG with <b>ExifTool</b>.</p>
+        </div>
+        <div class="col-md-3 ftco-animate mb-4">
+          <div class="step-num">2</div>
+          <h4>Pull the raw image</h4>
+          <p>Extract the embedded raw thermal data stream (a 16-bit image) and, if present, the
+          embedded visible/digital photo.</p>
+        </div>
+        <div class="col-md-3 ftco-animate mb-4">
+          <div class="step-num">3</div>
+          <h4>Convert to &deg;C</h4>
+          <p>Apply the Planck/radiance equations to convert each raw 16-bit value into a surface
+          temperature in degrees Celsius.</p>
+        </div>
+        <div class="col-md-3 ftco-animate mb-4">
+          <div class="step-num">4</div>
+          <h4>Color-map &amp; export</h4>
+          <p>Render the temperature matrix with ironbow, rainbow, and greyscale palettes, and export
+          raw data + parameters for further analysis.</p>
+        </div>
+      </div>
+
+      <!-- palettes -->
+      <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+          <p class="text-center mb-2"><b>Temperature color palettes produced</b></p>
+          <div class="mb-2"><div class="palette-swatch iron"></div><small>Ironbow</small></div>
+          <div class="mb-2"><div class="palette-swatch rain"></div><small>Rainbow</small></div>
+          <div class="mb-2"><div class="palette-swatch grey"></div><small>Greyscale</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- END intro -->
+
+  <!-- START tools -->
+  <section class="ftco-section bg-light">
+    <div class="container">
+      <div class="row justify-content-center mb-5">
+        <div class="col-md-10 text-center heading-section ftco-animate">
+          <h2 class="h1 mb-3">Open-source conversion tools</h2>
+          <p>All maintained by <a href="https://github.com/gtatters" target="_blank">Glenn Tattersall (gtatters)</a> on GitHub.
+          Pick the one that fits your workflow &mdash; R, ImageJ, or the command line.</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 col-lg-4 ftco-animate mb-4">
+          <div class="tool-card">
+            <span class="tool-lang">R package</span>
+            <h3><a href="https://github.com/gtatters/Thermimage" target="_blank">Thermimage</a></h3>
+            <p>The core R package for working with radiometric thermal image files: import FLIR data, apply the
+            raw-to-temperature conversion, and analyze and visualize temperature matrices. The recommended
+            starting point for an R-based workflow.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 ftco-animate mb-4">
+          <div class="tool-card">
+            <span class="tool-lang">ImageJ macro</span>
+            <h3><a href="https://github.com/gtatters/ThermImageJ" target="_blank">ThermImageJ</a></h3>
+            <p>ImageJ/Fiji functions and macros for opening FLIR files, converting to temperature, and measuring
+            regions of interest interactively &mdash; ideal if you prefer a point-and-click GUI over scripting.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 ftco-animate mb-4">
+          <div class="tool-card">
+            <span class="tool-lang">Command line / Perl</span>
+            <h3><a href="https://github.com/gtatters/ThermimageBash" target="_blank">ThermimageBash</a></h3>
+            <p>Command-line tools for batch-converting FLIR thermal image files. Useful for scripting bulk
+            conversions of large image sets outside of R or ImageJ.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 ftco-animate mb-4">
+          <div class="tool-card">
+            <span class="tool-lang">R</span>
+            <h3><a href="https://github.com/gtatters/FLIRJPGConvert" target="_blank">FLIRJPGConvert</a></h3>
+            <p>Focused routines for converting FLIR JPG files, extracting the embedded raw data and calibration
+            parameters needed for temperature conversion.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 ftco-animate mb-4">
+          <div class="tool-card">
+            <span class="tool-lang">R</span>
+            <h3><a href="https://github.com/gtatters/FLIRonejpg" target="_blank">FLIRonejpg</a></h3>
+            <p>Utilities geared toward FLIR ONE camera JPGs, handling their particular embedded data layout.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 ftco-animate mb-4">
+          <div class="tool-card">
+            <span class="tool-lang">Workshop</span>
+            <h3><a href="https://github.com/gtatters/ThermalImagingWorkshop" target="_blank">Thermal Imaging Workshop</a></h3>
+            <p>Teaching materials and worked examples walking through thermal image analysis end to end &mdash;
+            a great companion for learning the methods above.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 ftco-animate mb-4">
+          <div class="tool-card">
+            <span class="tool-lang">R</span>
+            <h3><a href="https://github.com/gtatters/ThermimageCalibration" target="_blank">ThermimageCalibration</a></h3>
+            <p>Reference data files comparing temperature calculations against thermal-imaging software, useful
+            for validating your own conversion results.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 ftco-animate mb-4">
+          <div class="tool-card">
+            <span class="tool-lang">R</span>
+            <h3><a href="https://github.com/gtatters/thermocamTools" target="_blank">thermocamTools</a></h3>
+            <p>A collection of custom helper functions for FLIR thermocam projects.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 ftco-animate mb-4">
+          <div class="tool-card">
+            <span class="tool-lang">Dependency</span>
+            <h3><a href="https://exiftool.org/" target="_blank">ExifTool</a></h3>
+            <p>Phil Harvey's ExifTool is the underlying utility these packages call to read FLIR metadata and
+            extract the embedded raw thermal and visible images. Install it first.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-center mt-4">
+        <div class="col-md-10 text-center ftco-animate">
+          <p>Once you have produced temperature-coded images for a specimen, add them to your image repository and
+          list the filenames in <code>data/images.json</code> so they appear in the
+          <a href="gallery.html">Gallery</a> and <a href="map.html">Map</a>. See the project README for the metadata schema.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- END tools -->
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.1.3.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/jquery.stellar.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/scrollax.min.js"></script>
+    <script src="js/main.js"></script>
+    <!-- START footer -->
+    <footer class="ftco-footer ftco-bg-dark ftco-section">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4">
+              <h2 class="ftco-heading-2">TrEnCh-IR</h2>
+              <p>Leveraging thermal images to understand how climate change impacts organisms' body temperatures and thermal stress.</p>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4 ml-5">
+              <h2 class="ftco-heading-2">Quick Links</h2>
+              <ul class="list-unstyled">
+                <li><a href="index.html" class="py-2 d-block">Home</a></li>
+                <li><a href="about.html" class="py-2 d-block">About</a></li>
+                <li><a href="science.html" class="py-2 d-block">The Science</a></li>
+                <li><a href="map.html" class="py-2 d-block">Map</a></li>
+                <li><a href="gallery.html" class="py-2 d-block">Gallery</a></li>
+                <li><a href="conversion.html" class="py-2 d-block">Conversion Tools</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md">
+             <div class="ftco-footer-widget mb-4">
+              <h2 class="ftco-heading-2">Contact Information</h2>
+              <ul class="list-unstyled">
+                <li><a href="https://www.washington.edu/" class="py-2 d-block">University of Washington</a></li>
+                <li><a href="http://faculty.washington.edu/lbuckley/" class="py-2 d-block">Buckley Lab</a></li>
+                <li><a href="https://www.trenchproject.com/" class="py-2 d-block">trenchproject.com</a></li>
+                <li><a href="mailto:lbuckley@uw.edu" class="py-2 d-block">lbuckley@uw.edu</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4">
+              <ul class="ftco-footer-social list-unstyled float-md-left float-lft">
+                <li><a href="https://github.com/trenchproject"><span class="icon-github"></span></a></li>
+                <li><a href="https://www.instagram.com/trenchproject/?hl=en"><span class="icon-instagram"></span></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <p>Copyright &copy;<script>document.write(new Date().getFullYear());</script> This template by <a href="https://colorlib.com" target="_blank">Colorlib</a>. Website design by <a target="_blank" href="http://avmey.com">Abigail Meyer</a>.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
